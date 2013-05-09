@@ -1,0 +1,7 @@
+name = MailFish
+description = Example module that allows users to subscribe to nodes.
+core = 7.x
+package = MailFish
+version = 0.2-dev
+dependencies[] = block
+configure = admin/config/content/mailfish

@@ -1,0 +1,1 @@
+{"ts":1368127394949,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"<?php\n\nphpinfo();\necho 1 + 1\necho \"cool 4 typing\"\n"]],"start1":0,"start2":0,"length1":0,"length2":50}]],"length":50}

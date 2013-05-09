@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session2.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Create your first page callback</span>
+<span class="hl com"> ***************************************************************************** /</span>
+<span class="hl com"></span>
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_menu().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_menu</span><span class="hl sym">() {</span>
+  <span class="hl kwc">$items</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">();</span>
+  <span class="hl kwc">$items</span><span class="hl sym">[</span><span class="hl str">'admin/config/content/mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'MailFish Settings'</span><span class="hl sym">,</span>
+    <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Administer MailFish Settings.'</span><span class="hl sym">,</span>
+    <span class="hl str">'page callback'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'mailfish_admin_settings_callback'</span><span class="hl sym">,</span>
+    <span class="hl str">'access arguments'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'manage mailfish settings'</span><span class="hl sym">),</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwa">return</span> <span class="hl kwc">$items</span><span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Menu Callback; Allows admins to pick which content types should be enabled for signups.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_admin_settings_callback</span><span class="hl sym">() {</span>
+  <span class="hl kwa">return</span> <span class="hl str">'Settings form should go here.'</span><span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Define menu items with hook_menu</span>
+<span class="hl com"> *****************************************************************************/</span>
+  
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_menu().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_menu</span><span class="hl sym">() {</span>
+  <span class="hl kwc">$items</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">();</span>
+  <span class="hl kwc">$items</span><span class="hl sym">[</span><span class="hl str">'admin/config/content/mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'MailFish Settings'</span><span class="hl sym">,</span>
+    <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Administer MailFish Settings.'</span><span class="hl sym">,</span>
+    <span class="hl str">'page callback'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'drupal_get_form'</span><span class="hl sym">,</span>
+    <span class="hl str">'page arguments'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'mailfish_admin_settings_form'</span><span class="hl sym">),</span>
+    <span class="hl str">'access arguments'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'manage mailfish settings'</span><span class="hl sym">),</span>
+    <span class="hl str">'file'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'mailfish.admin.inc'</span><span class="hl sym">,</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwc">$items</span><span class="hl sym">[</span><span class="hl str">'admin/reports/mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'MailFish Signups'</span><span class="hl sym">,</span>
+    <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'View MailFish Signups'</span><span class="hl sym">,</span>
+    <span class="hl str">'page callback'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'mailfish_signups'</span><span class="hl sym">,</span>
+    <span class="hl str">'access arguments'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'view mailfish subscriptions'</span><span class="hl sym">),</span>
+    <span class="hl str">'file'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'mailfish.admin.inc'</span><span class="hl sym">,</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwa">return</span> <span class="hl kwc">$items</span><span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Define menu items with hook_menu</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_permission().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_permission</span><span class="hl sym">() {</span>
+  <span class="hl kwc">$perm</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'view mailfish subscriptions'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'View Mailfish subscriptions'</span><span class="hl sym">),</span>
+    <span class="hl sym">),</span>  
+    <span class="hl str">'create mailfish subscription'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Create Mailfish subscriptions'</span><span class="hl sym">),</span>
+    <span class="hl sym">),</span>  
+    <span class="hl str">'manage mailfish settings'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Manage Mailfish settings'</span><span class="hl sym">),</span>
+    <span class="hl sym">)</span>   
+  <span class="hl sym">);</span>  
+  <span class="hl kwa">return</span> <span class="hl kwc">$perm</span><span class="hl sym">;</span>
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->

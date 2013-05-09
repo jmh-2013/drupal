@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session11.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Writing a test</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl kwa">class</span> MailfishTestCase <span class="hl kwa">extends</span> DrupalWebTestCase <span class="hl sym">{</span>
+
+  <span class="hl kwa">public static function</span> <span class="hl kwd">getInfo</span><span class="hl sym">() {</span>
+    <span class="hl kwa">return array</span><span class="hl sym">(</span>
+      <span class="hl str">'name'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Mailfish functionality'</span><span class="hl sym">,</span>
+      <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Test the mailfish settings form functionality'</span><span class="hl sym">,</span>
+      <span class="hl str">'group'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Mailfish'</span><span class="hl sym">,</span>
+    <span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl com">/**</span>
+<span class="hl com">   * Enable modules and create users with specific permissions.</span>
+<span class="hl com">   */</span>
+  <span class="hl kwa">function</span> <span class="hl kwd">setUp</span><span class="hl sym">() {</span>
+    parent<span class="hl sym">::</span><span class="hl kwd">setUp</span><span class="hl sym">(</span><span class="hl str">'mailfish'</span><span class="hl sym">);</span>
+    <span class="hl slc">// Create users.</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span>admin_user <span class="hl sym">=</span> <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">drupalCreateUser</span><span class="hl sym">(</span><span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'manage mailfish settings'</span><span class="hl sym">,</span>
+      <span class="hl str">'create page content'</span><span class="hl sym">,</span>
+    <span class="hl sym">));</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl com">/**</span>
+<span class="hl com">   * Test mailfish settings functionality.</span>
+<span class="hl com">   */</span>
+  <span class="hl kwa">function</span> <span class="hl kwd">testMailfishSettings</span><span class="hl sym">() {</span>
+    <span class="hl slc">// Log in an admin user.</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">drupalLogin</span><span class="hl sym">(</span><span class="hl kwc">$this</span><span class="hl sym">-&gt;</span>admin_user<span class="hl sym">);</span>
+
+    <span class="hl slc">// Check that no mailfish settings appear when adding a new page.</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">drupalGet</span><span class="hl sym">(</span><span class="hl str">'node/add/page'</span><span class="hl sym">);</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">assertNoText</span><span class="hl sym">(</span><span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Collect e-mail addresses for this node.'</span><span class="hl sym">),</span> <span class="hl str">'The mailfish settings were not found.'</span><span class="hl sym">);</span>
+
+    <span class="hl slc">// Change the settings to enable mailfish on pages.</span>
+    <span class="hl kwc">$edit</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'mailfish_types[page]'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">);</span>
+    
+    <span class="hl slc">// $edit = array();</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">drupalPost</span><span class="hl sym">(</span><span class="hl str">'admin/config/content/mailfish'</span><span class="hl sym">,</span> <span class="hl kwc">$edit</span><span class="hl sym">,</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Save configuration'</span><span class="hl sym">));</span>
+
+    <span class="hl slc">// Check that the mailfish settings appear when adding a new page.</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">drupalGet</span><span class="hl sym">(</span><span class="hl str">'node/add/page'</span><span class="hl sym">);</span>
+    <span class="hl kwc">$this</span><span class="hl sym">-&gt;</span><span class="hl kwd">assertText</span><span class="hl sym">(</span><span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Collect e-mail addresses for this node.'</span><span class="hl sym">),</span> <span class="hl str">'The mailfish settings were not found.'</span><span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->
