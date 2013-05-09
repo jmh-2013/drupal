@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session4.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Creating The mailfish.install File </span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * &#64;file</span>
+<span class="hl com"> *   Defines and manages the MailFish schema.</span>
+<span class="hl com"> */</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_schema().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_schema</span><span class="hl sym">() {</span>
+  <span class="hl kwc">$schema</span><span class="hl sym">[</span><span class="hl str">'mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Stores the email address, timestamp, node id and user id if any'</span><span class="hl sym">,</span>
+    <span class="hl str">'fields'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'id'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'The primary identifier for the entry.'</span><span class="hl sym">,</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'serial'</span><span class="hl sym">,</span>
+        <span class="hl str">'unsigned'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+      <span class="hl str">'uid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'The {users}.uid that added this subscription.'</span><span class="hl sym">,</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'int'</span><span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+        <span class="hl str">'default'</span> <span class="hl sym">=&gt;</span> <span class="hl num">0</span><span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+      <span class="hl str">'nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'The {node}.nid that this subscription was added on.'</span><span class="hl sym">,</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'int'</span><span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+        <span class="hl str">'default'</span> <span class="hl sym">=&gt;</span> <span class="hl num">0</span><span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+      <span class="hl str">'mail'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'User</span><span class="hl esc">\'</span><span class="hl str">s email address.'</span><span class="hl sym">,</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'varchar'</span><span class="hl sym">,</span>
+        <span class="hl str">'length'</span> <span class="hl sym">=&gt;</span> <span class="hl num">64</span><span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> FALSE<span class="hl sym">,</span>
+        <span class="hl str">'default'</span> <span class="hl sym">=&gt;</span> <span class="hl str">''</span><span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+      <span class="hl str">'created'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'int'</span><span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+        <span class="hl str">'default'</span> <span class="hl sym">=&gt;</span> <span class="hl num">0</span><span class="hl sym">,</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Timestamp for when subscription was created.'</span><span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+    <span class="hl sym">),</span>
+    <span class="hl str">'primary key'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'id'</span><span class="hl sym">),</span>
+    <span class="hl str">'indexes'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'node'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'nid'</span><span class="hl sym">),</span>
+      <span class="hl str">'node_user'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'nid'</span><span class="hl sym">,</span> <span class="hl str">'uid'</span><span class="hl sym">),</span>
+    <span class="hl sym">),</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwc">$schema</span><span class="hl sym">[</span><span class="hl str">'mailfish_enabled'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'Tracks whether MailFish is enabled for a given node.'</span><span class="hl sym">,</span>
+    <span class="hl str">'fields'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+        <span class="hl str">'description'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'The {node}.nid that has MailFish enabled.'</span><span class="hl sym">,</span>
+        <span class="hl str">'type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'int'</span><span class="hl sym">,</span>
+        <span class="hl str">'not null'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+        <span class="hl str">'default'</span> <span class="hl sym">=&gt;</span> <span class="hl num">0</span><span class="hl sym">,</span>
+      <span class="hl sym">),</span>
+    <span class="hl sym">),</span>
+    <span class="hl str">'primary key'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'nid'</span><span class="hl sym">),</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwa">return</span> <span class="hl kwc">$schema</span><span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_uninstall().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_uninstall</span><span class="hl sym">() {</span>
+  <span class="hl kwd">drupal_uninstall_schema</span><span class="hl sym">(</span><span class="hl str">'mailfish'</span><span class="hl sym">);</span>
+  <span class="hl kwd">variable_del</span><span class="hl sym">(</span><span class="hl str">'mailfish_types'</span><span class="hl sym">);</span>
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->

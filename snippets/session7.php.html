@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session7.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Adding node hooks to mailfish.module</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_node_load().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_node_load</span><span class="hl sym">(</span><span class="hl kwc">$nodes</span><span class="hl sym">,</span> <span class="hl kwc">$types</span><span class="hl sym">) {</span>
+  <span class="hl kwa">foreach</span> <span class="hl sym">(</span><span class="hl kwc">$nodes</span> <span class="hl kwa">as</span> <span class="hl kwc">$nid</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$node</span><span class="hl sym">) {</span>
+    <span class="hl slc">// Add mailfish data to the node object when it is loaded.</span>
+    <span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled <span class="hl sym">=</span> <span class="hl kwd">mailfish_get_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_node_insert().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_node_insert</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">) {</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled<span class="hl sym">) {</span>
+    <span class="hl slc">// If MailFish is enabled, store the record.</span>
+    <span class="hl kwd">mailfish_set_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_node_update().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_node_update</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">) {</span>
+  <span class="hl slc">// Delete the old record, if one exists.</span>
+  <span class="hl kwd">mailfish_delete_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">);</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled<span class="hl sym">) {</span>
+    <span class="hl slc">// If MailFish is enabled, store the record.</span>
+    <span class="hl kwd">mailfish_set_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_node_delete().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_node_delete</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">) {</span>
+  <span class="hl slc">// Delete the mailfish_enabled record when the node is deleted.</span>
+  <span class="hl kwd">mailfish_delete_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">);</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_node_view().</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_node_view</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">,</span> <span class="hl kwc">$view_mode</span><span class="hl sym">,</span> <span class="hl kwc">$langcode</span><span class="hl sym">) {</span>
+  <span class="hl slc">// If appropriate, add the mailfish email form to the node's display.</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(!</span><span class="hl kwa">empty</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled<span class="hl sym">) &amp;&amp;</span> <span class="hl kwd">user_access</span><span class="hl sym">(</span><span class="hl str">'create mailfish subscription'</span><span class="hl sym">)) {</span>
+    <span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>content<span class="hl sym">[</span><span class="hl str">'mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'#markup'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">drupal_render</span><span class="hl sym">(</span><span class="hl kwd">drupal_get_form</span><span class="hl sym">(</span><span class="hl str">'mailfish_email_form'</span><span class="hl sym">,</span> <span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>nid<span class="hl sym">)),</span>
+      <span class="hl str">'#weight'</span> <span class="hl sym">=&gt;</span> <span class="hl num">100</span><span class="hl sym">,</span>
+    <span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->

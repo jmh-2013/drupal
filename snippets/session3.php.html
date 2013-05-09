@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session3.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Menu Callback; Allows admins to pick which content types should be   enabled for signups.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_admin_settings_callback</span><span class="hl sym">() {</span>
+  <span class="hl kwa">return</span> <span class="hl kwd">drupal_get_form</span><span class="hl sym">(</span><span class="hl str">'mailfish_admin_settings_form'</span><span class="hl sym">);</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Defining The System Settings Form in mailfish.admin.inc</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_admin_settings_form</span><span class="hl sym">() {</span>
+  <span class="hl kwc">$form</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">();</span>
+  <span class="hl kwc">$form</span><span class="hl sym">[</span><span class="hl str">'mailfish_types'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'#title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'The content types to enable MailFish subscriptions for'</span><span class="hl sym">),</span>
+    <span class="hl str">'#description'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'On the specified node types, a MailFish subscription option will be available and can be enabled while that node is being edited.'</span><span class="hl sym">),</span>
+    <span class="hl str">'#type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'checkboxes'</span><span class="hl sym">,</span>
+    <span class="hl str">'#options'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">node_type_get_names</span><span class="hl sym">(),</span>
+    <span class="hl str">'#default_value'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">variable_get</span><span class="hl sym">(</span><span class="hl str">'mailfish_types'</span><span class="hl sym">,</span> <span class="hl kwa">array</span><span class="hl sym">()),</span>
+  <span class="hl sym">);</span>
+  <span class="hl kwa">return</span> <span class="hl kwd">system_settings_form</span><span class="hl sym">(</span><span class="hl kwc">$form</span><span class="hl sym">);</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Add a per-node setting with hook_form_alter().</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Implements hook_form_FORM_ID_alter().</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Adds a checkbox to allow email address collection per node for</span>
+<span class="hl com"> * enabled content types.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_form_node_form_alter</span><span class="hl sym">(&amp;</span><span class="hl kwc">$form</span><span class="hl sym">,</span> <span class="hl kwc">$form_state</span><span class="hl sym">) {</span>
+  <span class="hl kwc">$node</span> <span class="hl sym">=</span> <span class="hl kwc">$form</span><span class="hl sym">[</span><span class="hl str">'#node'</span><span class="hl sym">];</span>
+  <span class="hl slc">// Perform our check to see if we should be performing an action as the very first action.</span>
+  <span class="hl kwc">$types</span> <span class="hl sym">=</span> <span class="hl kwd">variable_get</span><span class="hl sym">(</span><span class="hl str">'mailfish_types'</span><span class="hl sym">,</span> <span class="hl kwa">array</span><span class="hl sym">());</span>
+  <span class="hl slc">// Check if this node type is enabled for mailfish</span>
+  <span class="hl slc">// and that the user has access to the per-node settings.</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(!</span><span class="hl kwa">empty</span><span class="hl sym">(</span><span class="hl kwc">$types</span><span class="hl sym">[</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>type<span class="hl sym">]) &amp;&amp;</span> <span class="hl kwd">user_access</span><span class="hl sym">(</span><span class="hl str">'manage mailfish settings'</span><span class="hl sym">)) {</span>
+    <span class="hl slc">// Add a new fieldset with a checkbox for per-node mailfish setting.</span>
+    <span class="hl kwc">$form</span><span class="hl sym">[</span><span class="hl str">'mailfish'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'#title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'MailFish'</span><span class="hl sym">),</span>
+      <span class="hl str">'#type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'fieldset'</span><span class="hl sym">,</span>
+      <span class="hl str">'#collapsible'</span> <span class="hl sym">=&gt;</span> TRUE<span class="hl sym">,</span>
+      <span class="hl str">'#collapsed'</span> <span class="hl sym">=&gt;</span> FALSE<span class="hl sym">,</span>
+      <span class="hl str">'#group'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'additional_settings'</span><span class="hl sym">,</span>
+    <span class="hl sym">);</span>
+    <span class="hl kwc">$form</span><span class="hl sym">[</span><span class="hl str">'mailfish'</span><span class="hl sym">][</span><span class="hl str">'mailfish_enabled'</span><span class="hl sym">] =</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+      <span class="hl str">'#title'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">t</span><span class="hl sym">(</span><span class="hl str">'Collect e-mail addresses for this node.'</span><span class="hl sym">),</span>
+      <span class="hl str">'#type'</span> <span class="hl sym">=&gt;</span> <span class="hl str">'checkbox'</span><span class="hl sym">,</span>
+      <span class="hl str">'#default_value'</span> <span class="hl sym">=&gt;</span> <span class="hl kwa">isset</span><span class="hl sym">(</span><span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled<span class="hl sym">)</span> ? <span class="hl kwc">$node</span><span class="hl sym">-&gt;</span>mailfish_enabled <span class="hl sym">:</span> FALSE<span class="hl sym">,</span>
+    <span class="hl sym">);</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>session8.php</title>
+<link rel="stylesheet" type="text/css" href="highlight.css">
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl sym">&lt;</span>?php
+
+<span class="hl com">/******************************************************************************</span>
+<span class="hl com"> * Exercise: Defining Our MailFish Database Queries</span>
+<span class="hl com"> *****************************************************************************/</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Determine if a node is set to display an email address form.</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * &#64;param int $nid</span>
+<span class="hl com"> *   The node id of the node in question.</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * &#64;return boolean</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_get_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">) {</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwd">is_numeric</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">)) {</span>
+    <span class="hl kwc">$result</span> <span class="hl sym">=</span> <span class="hl kwd">db_query</span><span class="hl sym">(</span><span class="hl str">&quot;SELECT nid FROM {mailfish_enabled} WHERE nid = :nid&quot;</span><span class="hl sym">,</span> <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$nid</span><span class="hl sym">))-&gt;</span><span class="hl kwd">fetchField</span><span class="hl sym">();</span>
+    <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwc">$result</span><span class="hl sym">) {</span>
+      <span class="hl kwa">return</span> TRUE<span class="hl sym">;</span>
+    <span class="hl sym">}</span>   
+  <span class="hl sym">}</span>
+  <span class="hl kwa">return</span> FALSE<span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Add an entry for a node's mailfish setting.</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * &#64;param int $nid</span>
+<span class="hl com"> *   The node id of the node in question.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_set_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">) {</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwd">is_numeric</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">)) {</span>
+    <span class="hl kwa">if</span> <span class="hl sym">(!</span><span class="hl kwd">mailfish_get_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">)) {</span>
+      <span class="hl kwc">$jump</span> <span class="hl sym">=</span> <span class="hl kwd">db_insert</span><span class="hl sym">(</span><span class="hl str">'mailfish_enabled'</span><span class="hl sym">)</span>
+        <span class="hl sym">-&gt;</span><span class="hl kwd">fields</span><span class="hl sym">(</span><span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$nid</span><span class="hl sym">))</span>
+        <span class="hl sym">-&gt;</span><span class="hl kwd">execute</span><span class="hl sym">();</span>
+    <span class="hl sym">}</span>   
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Remove an entry for a node's mailfish setting.</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * &#64;param int $nid</span>
+<span class="hl com"> *   The node id of the node in question.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_delete_node_enabled</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">) {</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwd">is_numeric</span><span class="hl sym">(</span><span class="hl kwc">$nid</span><span class="hl sym">)) {</span>
+    <span class="hl kwc">$vump</span> <span class="hl sym">=</span> <span class="hl kwd">db_delete</span><span class="hl sym">(</span><span class="hl str">'mailfish_enabled'</span><span class="hl sym">)</span>
+      <span class="hl sym">-&gt;</span><span class="hl kwd">condition</span><span class="hl sym">(</span><span class="hl str">'nid'</span><span class="hl sym">,</span> <span class="hl kwc">$nid</span><span class="hl sym">)</span>
+      <span class="hl sym">-&gt;</span><span class="hl kwd">execute</span><span class="hl sym">();</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Store a mailfish email signup.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">function</span> <span class="hl kwd">mailfish_signup</span><span class="hl sym">(</span><span class="hl kwc">$email</span><span class="hl sym">,</span> <span class="hl kwc">$nid</span><span class="hl sym">,</span> <span class="hl kwc">$account</span> <span class="hl sym">=</span> NULL<span class="hl sym">) {</span>
+  <span class="hl kwa">if</span> <span class="hl sym">(</span><span class="hl kwd">is_null</span><span class="hl sym">(</span><span class="hl kwc">$account</span><span class="hl sym">)) {</span>
+    <span class="hl kwa">global</span> <span class="hl kwc">$user</span><span class="hl sym">;</span>
+    <span class="hl kwc">$account</span> <span class="hl sym">=</span> <span class="hl kwc">$user</span><span class="hl sym">;</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwc">$value</span> <span class="hl sym">=</span> <span class="hl kwa">array</span><span class="hl sym">(</span>
+    <span class="hl str">'nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$nid</span><span class="hl sym">,</span>
+    <span class="hl str">'uid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$account</span><span class="hl sym">-&gt;</span>uid<span class="hl sym">,</span>
+    <span class="hl str">'mail'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$email</span><span class="hl sym">,</span>
+    <span class="hl str">'created'</span> <span class="hl sym">=&gt;</span> <span class="hl kwd">time</span><span class="hl sym">(),</span>
+  <span class="hl sym">);</span>  
+
+  <span class="hl kwd">drupal_alter</span><span class="hl sym">(</span><span class="hl str">'mailfish_signup'</span><span class="hl sym">,</span> <span class="hl kwc">$value</span><span class="hl sym">);</span>
+
+  <span class="hl kwd">module_invoke_all</span><span class="hl sym">(</span><span class="hl str">'mailfish_signup'</span><span class="hl sym">,</span> <span class="hl kwc">$value</span><span class="hl sym">);</span>
+
+  <span class="hl kwc">$_SESSION</span><span class="hl sym">[</span><span class="hl str">'mailfish'</span><span class="hl sym">] =</span> <span class="hl kwc">$nid</span><span class="hl sym">;</span>
+    
+   <span class="hl kwd">drupal_write_record</span><span class="hl sym">(</span><span class="hl str">'mailfish'</span><span class="hl sym">,</span> <span class="hl kwc">$value</span><span class="hl sym">);</span>
+  <span class="hl kwd">watchdog</span><span class="hl sym">(</span><span class="hl str">'mailfish'</span><span class="hl sym">,</span> <span class="hl str">'User &#64;uid signed up for node &#64;nid with &#64;email'</span><span class="hl sym">,</span>  <span class="hl kwa">array</span><span class="hl sym">(</span><span class="hl str">'&#64;uid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$account</span><span class="hl sym">-&gt;</span>uid<span class="hl sym">,</span> <span class="hl str">'&#64;nid'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$nid</span><span class="hl sym">,</span> <span class="hl str">'&#64;email'</span> <span class="hl sym">=&gt;</span> <span class="hl kwc">$email</span><span class="hl sym">));</span>
+
+<span class="hl sym">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 2.16, http://www.andre-simon.de/-->
