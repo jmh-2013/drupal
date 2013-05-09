@@ -1,0 +1,1 @@
+{"ts":1368129410675,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"name = MailFish \ndescription = Example module that allows users to subscribe to nodes. \ncore = 7.x\npackage = MailFish\nversion = 0.2-dev \ndependencies[] = block\nconfigure = admin/config/content/mailfish\nfiles[] = mailfish.test"]],"start1":0,"start2":0,"length1":0,"length2":225}]],"length":225}
